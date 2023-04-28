@@ -11,8 +11,8 @@ class Direction(Enum):
     DOWN = 2 
     RIGHT = 3
 
-def opposite_dir(dir: Direction) -> Direction:
-    match dir:
+def opposite_dir(direction: Direction) -> Direction:
+    match direction:
         case Direction.UP:
             return Direction.DOWN
         
@@ -70,10 +70,10 @@ class World:
         if new_cell[1] < 0 :
             new_cell = (new_cell[0] , self.height - 1)
 
-        if new_cell[0] > self.width :
+        if new_cell[0] >= self.width :
             new_cell =( 0, new_cell[1])
         
-        if new_cell[1] > self.height :
+        if new_cell[1] >= self.height :
             new_cell = (new_cell[0] , 0)
 
         # This makes Snake Grow
@@ -82,6 +82,7 @@ class World:
         else:
             self.snake = [new_cell] + self.snake[:-1]
         
+        print(new_cell)
 
     #################################################
 
