@@ -1,18 +1,26 @@
+from dataclasses import dataclass
 import pygame as pg
+
+@dataclass
+class GameConfig:
+    win_dim : tuple[int, int] = (600, 480)
+
+    # debug settings
+    dbg_font_size:int = 14
+    dbg_text_wrap: int = 30
 
 class Game:
     def __init__(self) -> None:
         pg.init()
+        self.config = GameConfig()
 
         self.fps = 60
-
-        self.surface = pg.display.set_mode((600, 400))
-
-        self.clock = pg.time.Clock()
+        self.surface = pg.display.set_mode(self.config.win_dim) # Create Display
+        self.clock = pg.time.Clock() # Clock for fps
 
         # For Debug Info
-        self.dbg_font = pg.font.SysFont('Verdana', 14)
-        self.dbg_rect = pg.rect.Rect(0,0,30 , 140)
+        self.dbg_font = pg.font.SysFont('Verdana', self.config.dbg_font_size)
+        self.dbg_rect = pg.rect.Rect(0,0,self.config.dbg_text_wrap, self.config.dbg_font_size*10)
 
     def update(self) -> None:
         for event in pg.event.get():
@@ -34,6 +42,7 @@ class Game:
 
     def run(self) -> None:
         while 1:
+            self.clock.tick(self.fps)
             
             self.update()
             self.draw()
