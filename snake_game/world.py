@@ -32,7 +32,7 @@ class World:
         self.cell_size = cell_size
 
         self.surf = surf
-
+        self.snake = []
         self.spawn_snake((self.width//2, self.height//2))
 
         self.current_dir = Direction.LEFT
