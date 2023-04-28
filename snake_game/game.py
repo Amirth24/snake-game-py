@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 import pygame as pg
 
-from .world import World
+from .world import World, Direction
 
 @dataclass
 class GameConfig:
@@ -14,6 +14,13 @@ class GameConfig:
     # World Settings
     world_cell_size: int = 10
 
+    # Key Maps
+    u_k = pg.K_w
+    d_k = pg.K_s
+    l_k = pg.K_a
+    r_k = pg.K_d
+
+
 
 class Game:
     def __init__(self) -> None:
@@ -23,6 +30,14 @@ class Game:
         self.fps = 60
         self.surface = pg.display.set_mode(self.config.win_dim) # Create Display
         self.clock = pg.time.Clock() # Clock for fps
+
+        self.key_map = {
+            self.config.u_k : Direction.UP,
+            self.config.d_k : Direction.DOWN,
+            self.config.l_k : Direction.LEFT,
+            self.config.r_k : Direction.RIGHT,
+        }
+
 
         # For Debug Info
         self.dbg_font = pg.font.SysFont('Verdana', self.config.dbg_font_size)
@@ -34,9 +49,23 @@ class Game:
 
 
     def update(self) -> None:
+        new_dir = None
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 self.exit_game()
+
+            elif event.type == pg.KEYDOWN:
+                match event.dict.get('key'):
+                    # Other Keys than control ..
+
+
+                    # Snake Control
+                    case x:
+                        new_dir = self.key_map.get(x, None)
+
+
+        self.world.update(new_dir) 
+
             
 
 
