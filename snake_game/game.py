@@ -6,7 +6,9 @@ from .world import World, Direction
 @dataclass
 class GameConfig:
     win_dim : tuple[int, int] = (600, 480)
-
+    max_fps: int = 24
+    min_fps: int = 12
+    
     # debug settings
     dbg_font_size:int = 14
     dbg_text_wrap: int = 30
@@ -27,7 +29,7 @@ class Game:
         pg.init()
         self.config = GameConfig()
 
-        self.fps = 60
+        self.fps = self.config.max_fps
         self.surface = pg.display.set_mode(self.config.win_dim) # Create Display
         self.clock = pg.time.Clock() # Clock for fps
 
@@ -57,7 +59,12 @@ class Game:
             elif event.type == pg.KEYDOWN:
                 match event.dict.get('key'):
                     # Other Keys than control ..
+                    case pg.K_x:
 
+                        self.fps = self.config.max_fps if self.fps >= self.config.max_fps else self.fps +1
+
+                    case pg.K_z:
+                        self.fps = self.config.min_fps if self.fps <= self.config.min_fps else self.fps -1
 
                     # Snake Control
                     case x:
