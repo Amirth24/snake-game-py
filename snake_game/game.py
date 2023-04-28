@@ -29,14 +29,9 @@ class Game:
         self.dbg_rect = pg.rect.Rect(0,0,self.config.dbg_text_wrap, self.config.dbg_font_size*10)
 
 
-        # Testing World
-
         self.world = World(self.config.win_dim, self.config.world_cell_size, self.surface)
 
 
-        print('World Width and Height',self.world.width, self.world.height)
-
-        self.world.rects = [(0,0), (5,7), (10, 10)]
 
     def update(self) -> None:
         for event in pg.event.get():

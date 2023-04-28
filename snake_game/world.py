@@ -1,5 +1,29 @@
 from pygame import Surface, Rect, draw,Color
 
+
+from enum import Enum
+
+class Direction(Enum):
+    UP = 0
+    LEFT = 1
+    DOWN = 2 
+    RIGHT = 3
+
+def opposite_dir(dir: Direction) -> Direction:
+    match dir:
+        case Direction.UP:
+            return Direction.DOWN
+        
+        case Direction.DOWN:
+            return Direction.UP
+        
+        case Direction.RIGHT:
+            return Direction.LEFT
+        
+        case Direction.LEFT:
+            return Direction.RIGHT
+
+
 class World:
     def __init__(self, dim: tuple[int, int], cell_size: int, surf: Surface) -> None:
         self.bound = (0,0, *dim)
