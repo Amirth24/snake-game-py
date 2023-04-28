@@ -1,3 +1,5 @@
+import random
+
 from pygame import Surface, Rect, draw,Color
 
 
@@ -31,7 +33,57 @@ class World:
 
         self.surf = surf
 
-        self.rects = [] # Store the rect in (x, y) tuple where x (row) and y(col) are grid index.
+        self.spawn_snake((self.width//2, self.height//2))
+
+        self.current_dir = Direction.LEFT
+
+        self.gen_food()
+
+    #################################################
+    def spawn_snake(self, pos:tuple[int, int]):
+        self.snake =  [pos,(pos[0]+1, pos[1]),(pos[0]+2, pos[1])]
+
+    def gen_food(self):
+        self.food_pos = (random.randint(0, self.width), random.randint(0, self.height))
+        if self.food_pos in self.snake:
+            self.gen_food() # Get a Valid food position until....
+
+    def update_snake(self, direction: Direction):
+        cell = self.snake[0]
+        if direction != None and direction != opposite_dir(self.current_dir):
+            self.current_dir = direction
+
+        match self.current_dir:
+            case Direction.UP:
+                new_cell = (cell[0], cell[1] - 1)
+            case Direction.DOWN:
+                new_cell = (cell[0], cell[1] + 1)
+            case Direction.LEFT:
+                new_cell = (cell[0] - 1, cell[1])
+            case Direction.RIGHT:
+                new_cell = (cell[0] + 1, cell[1])
+
+        # Wrapping the snake within the bound
+        if new_cell[0] < 0 :
+            new_cell =( self.width - 1, new_cell[1])
+        
+        if new_cell[1] < 0 :
+            new_cell = (new_cell[0] , self.height - 1)
+
+        if new_cell[0] > self.width :
+            new_cell =( 0, new_cell[1])
+        
+        if new_cell[1] > self.height :
+            new_cell = (new_cell[0] , 0)
+
+        # This makes Snake Grow
+        if new_cell == self.food_pos:
+            self.snake = [new_cell] + self.snake
+        else:
+            self.snake = [new_cell] + self.snake[:-1]
+        
+
+    #################################################
 
     @property
     def width(self) -> int:
@@ -41,10 +93,24 @@ class World:
     def height(self) -> int:
         return (self.bound[-1]-self.bound[1]) // self.cell_size
     
-    def to_rect(self, g) -> Rect:
+    def to_rect(self, g:tuple[int, int]) -> Rect:
         return Rect(g[0]*self.cell_size,g[1]*self.cell_size, self.cell_size, self.cell_size)
     
+    #################################################
+
+    def update(self, new_direction:Direction):
+        self.update_snake(new_direction)
+    
     def draw(self):
-        # Draw all the rectangle in buffer
-        for rect in self.rects:
-            draw.rect(self.surf, Color(255,255,255), self.to_rect(rect))
+
+        # Snake Head
+        snake_head = self.snake[0]
+        draw.rect(self.surf, Color(255,255,255), self.to_rect(snake_head))
+        # Snake Body
+        for rect in self.snake[1:]:
+            draw.rect(self.surf, Color(255,255,255,20),self.to_rect(rect))
+
+        # Draw Food
+        draw.rect(self.surf, Color(255, 0,0), self.to_rect(self.food_pos) )
+       
+
